@@ -1,0 +1,3 @@
+[submodule "2026_산업컴퓨터비전실제_중간프로젝트_날씨분류기"]
+	path = 2026_산업컴퓨터비전실제_중간프로젝트_날씨분류기
+	url = https://github.com/artelee/weather_classifier.git
