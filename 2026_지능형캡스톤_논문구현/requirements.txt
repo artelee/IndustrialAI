@@ -1,0 +1,9 @@
+torch
+torchvision
+torchreid
+gdown
+matplotlib
+numpy
+Pillow
+jupyter
+EOF
