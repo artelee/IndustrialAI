@@ -22,3 +22,6 @@
 [submodule "2025_강화학습실제_Atari game PONG_구현코드"]
 	path = 2025_강화학습실제_Atari game PONG_구현코드
 	url = https://github.com/artelee/rein-pingpong
+[submodule "2025_어프렌티스프로젝트_미세먼지모델_프로젝트"]
+	path = 2025_어프렌티스프로젝트_미세먼지모델_프로젝트
+	url = https://github.com/artelee/regession_project.git
