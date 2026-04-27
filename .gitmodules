@@ -13,3 +13,12 @@
 [submodule "2025_어프렌티스프로젝트_실습"]
 	path = 2025_어프렌티스프로젝트_실습
 	url = https://github.com/artelee/2025_Apprentice_AI
+[submodule "2025_강화학습실제_실습"]
+	path = 2025_강화학습실제_실습
+	url = https://github.com/artelee/2025_reinforce_quiz
+[submodule "2025_강화학습실제_DQN구현"]
+	path = 2025_강화학습실제_DQN구현
+	url = https://github.com/artelee/dqn
+[submodule "2025_강화학습실제_Atari game PONG_구현코드"]
+	path = 2025_강화학습실제_Atari game PONG_구현코드
+	url = https://github.com/artelee/rein-pingpong
