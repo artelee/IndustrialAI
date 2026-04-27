@@ -1,3 +1,15 @@
 [submodule "2026_산업컴퓨터비전실제_중간프로젝트_날씨분류기"]
 	path = 2026_산업컴퓨터비전실제_중간프로젝트_날씨분류기
 	url = https://github.com/artelee/weather_classifier.git
+[submodule "2026_산업컴퓨터비전실제_실습_VISION알고리즘"]
+	path = 2026_산업컴퓨터비전실제_실습_VISION알고리즘
+	url = https://github.com/artelee/vision_algorithm
+[submodule "2026_지능형캡스톤_실습"]
+	path = 2026_지능형캡스톤_실습
+	url = https://github.com/artelee/2026_Capstone
+[submodule "2025_딥러닝실제_실습"]
+	path = 2025_딥러닝실제_실습
+	url = https://github.com/artelee/deeplearning-level2
+[submodule "2025_어프렌티스프로젝트_실습"]
+	path = 2025_어프렌티스프로젝트_실습
+	url = https://github.com/artelee/2025_Apprentice_AI
