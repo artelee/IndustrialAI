@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(python -c \"import json; json.load\\(open\\('04_osnet_crossdomain_ablation.ipynb', encoding='utf-8'\\)\\); print\\('valid notebook JSON'\\)\")"
-    ]
-  }
-}
