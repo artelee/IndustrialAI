@@ -1,0 +1,57 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_market_nosie.pth
+feature 추출 중...
+수집: 500쌍
+
+======================================================================
+[1] Systematic shift — 실제 평균 vs 생성 평균
+======================================================================
+  실제 평균 norm: 20.103
+  생성 평균 norm: 20.219
+  shift norm (평균 차이): 2.118
+  평균 feature norm: 24.277
+  상대 shift: 8.7%
+  → shift 작음 → 단순 평균 차이 아님
+
+======================================================================
+[2] 차원별 차이 — 어느 차원이 다른가
+======================================================================
+  차이 큰 상위 10개 차원: [474, 650, 429, 309, 750, 389, 291, 397, 529, 347]
+  상위10 차원 차이 합: 2.284
+  전체 차원 차이 합: 55.278
+  상위10 비중: 4.1%
+  → 차이가 전 차원에 퍼짐 → 전역적 변환 필요
+
+======================================================================
+[3] 거리 분포 — query 기준
+======================================================================
+  query↔실제c1:  같은ID 0.906  다른ID 0.690  분리 0.216
+  query↔생성:    같은ID 0.883  다른ID 0.694  분리 0.189
+  → 생성도 같은ID > 다른ID 면 정보는 있음 (분리도 비교)
+
+======================================================================
+[4] shift 보정 — 생성에서 (gen_mean - real_mean) 빼면?
+======================================================================
+  보정 전 query↔생성: 0.883
+  보정 후 query↔생성: 0.886  (+0.003)
+  query↔실제c1:       0.906
+  → shift 보정 효과 미미 → 단순 shift 문제 아님
+
+======================================================================
+[5] t-SNE 시각화
+======================================================================
+  저장: /home/ubuntu/reid-gallery-expansion/outputs/feat_analysis/tsne.png
+  → 두 색이 섞임: feature 비슷 (좋음)
+  → 두 색이 분리: 생성이 다른 영역 (지도 필요)
+
+======================================================================
+종합 진단 → 지도 방법 결정:
+  [1] shift 큼 + [4] 보정 효과 → 단순 평균 차감으로 해결 (학습 불필요)
+  [2] 특정 차원 집중 → 그 차원 제거/정규화
+  [3] 생성도 분리도 있음 → 정보는 있으니 alignment 학습 가능
+  [5] t-SNE 분리 → feature alignment loss로 끌어당기기 필요

@@ -1,0 +1,52 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+
+==============================================================================
+## [2026-06-01] script93 표준평가  방향=duke2market
+   weight=clipreid_duke_nosie.pth  eval=Market-1501-v15.09.15
+==============================================================================
+[data] eval_root=/home/ubuntu/datasets/market1501/Market-1501-v15.09.15
+       query=3368, gallery=15913, cams=[0, 1, 2, 3, 4, 5]
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_duke_nosie.pth
+[extract] 128/3368[extract] 256/3368[extract] 384/3368[extract] 512/3368[extract] 640/3368[extract] 768/3368[extract] 896/3368[extract] 1024/3368[extract] 1152/3368[extract] 1280/3368[extract] 1408/3368[extract] 1536/3368[extract] 1664/3368[extract] 1792/3368[extract] 1920/3368[extract] 2048/3368[extract] 2176/3368[extract] 2304/3368[extract] 2432/3368[extract] 2560/3368[extract] 2688/3368[extract] 2816/3368[extract] 2944/3368[extract] 3072/3368[extract] 3200/3368[extract] 3328/3368[extract] 3368/3368
+[extract] 128/15913[extract] 256/15913[extract] 384/15913[extract] 512/15913[extract] 640/15913[extract] 768/15913[extract] 896/15913[extract] 1024/15913[extract] 1152/15913[extract] 1280/15913[extract] 1408/15913[extract] 1536/15913[extract] 1664/15913[extract] 1792/15913[extract] 1920/15913[extract] 2048/15913[extract] 2176/15913[extract] 2304/15913[extract] 2432/15913[extract] 2560/15913[extract] 2688/15913[extract] 2816/15913[extract] 2944/15913[extract] 3072/15913[extract] 3200/15913[extract] 3328/15913[extract] 3456/15913[extract] 3584/15913[extract] 3712/15913[extract] 3840/15913[extract] 3968/15913[extract] 4096/15913[extract] 4224/15913[extract] 4352/15913[extract] 4480/15913[extract] 4608/15913[extract] 4736/15913[extract] 4864/15913[extract] 4992/15913[extract] 5120/15913[extract] 5248/15913[extract] 5376/15913[extract] 5504/15913[extract] 5632/15913[extract] 5760/15913[extract] 5888/15913[extract] 6016/15913[extract] 6144/15913[extract] 6272/15913[extract] 6400/15913[extract] 6528/15913[extract] 6656/15913[extract] 6784/15913[extract] 6912/15913[extract] 7040/15913[extract] 7168/15913[extract] 7296/15913[extract] 7424/15913[extract] 7552/15913[extract] 7680/15913[extract] 7808/15913[extract] 7936/15913[extract] 8064/15913[extract] 8192/15913[extract] 8320/15913[extract] 8448/15913[extract] 8576/15913[extract] 8704/15913[extract] 8832/15913[extract] 8960/15913[extract] 9088/15913[extract] 9216/15913[extract] 9344/15913[extract] 9472/15913[extract] 9600/15913[extract] 9728/15913[extract] 9856/15913[extract] 9984/15913[extract] 10112/15913[extract] 10240/15913[extract] 10368/15913[extract] 10496/15913[extract] 10624/15913[extract] 10752/15913[extract] 10880/15913[extract] 11008/15913[extract] 11136/15913[extract] 11264/15913[extract] 11392/15913[extract] 11520/15913[extract] 11648/15913[extract] 11776/15913[extract] 11904/15913[extract] 12032/15913[extract] 12160/15913[extract] 12288/15913[extract] 12416/15913[extract] 12544/15913[extract] 12672/15913[extract] 12800/15913[extract] 12928/15913[extract] 13056/15913[extract] 13184/15913[extract] 13312/15913[extract] 13440/15913[extract] 13568/15913[extract] 13696/15913[extract] 13824/15913[extract] 13952/15913[extract] 14080/15913[extract] 14208/15913[extract] 14336/15913[extract] 14464/15913[extract] 14592/15913[extract] 14720/15913[extract] 14848/15913[extract] 14976/15913[extract] 15104/15913[extract] 15232/15913[extract] 15360/15913[extract] 15488/15913[extract] 15616/15913[extract] 15744/15913[extract] 15872/15913[extract] 15913/15913
+baseline             R1= 70.7  R5= 84.1  R10= 88.9  mAP= 43.4
+CP-global            R1= 70.6  R5= 83.7  R10= 88.5  mAP= 45.4   (R1 -0.1, mAP +2.0)
+CP-percam            R1= 75.9  R5= 89.2  R10= 92.6  mAP= 52.6   (R1 +5.1, mAP +9.1)
+
+  [N_PROTO x seed 안정성 / CP-percam]
+  N_PROTO R1(mean±std)      mAP(mean±std)     
+  all      75.9±0.0       52.6±0.0
+  5        26.0±2.9       18.2±1.8
+  10       52.8±3.0       35.4±1.7
+  20       67.6±1.0       45.0±0.7
+  50       73.3±0.3       49.7±0.2
+
+==============================================================================
+## [2026-06-01] script93 표준평가  방향=market2duke
+   weight=clipreid_market_nosie.pth  eval=DukeMTMC-reID
+==============================================================================
+[data] eval_root=/home/ubuntu/datasets/dukemtmc-reid/DukeMTMC-reID
+       query=2228, gallery=14588, cams=[0, 1, 2, 3, 4, 5, 6, 7]
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_market_nosie.pth
+[extract] 128/2228[extract] 256/2228[extract] 384/2228[extract] 512/2228[extract] 640/2228[extract] 768/2228[extract] 896/2228[extract] 1024/2228[extract] 1152/2228[extract] 1280/2228[extract] 1408/2228[extract] 1536/2228[extract] 1664/2228[extract] 1792/2228[extract] 1920/2228[extract] 2048/2228[extract] 2176/2228[extract] 2228/2228
+[extract] 128/14588[extract] 256/14588[extract] 384/14588[extract] 512/14588[extract] 640/14588[extract] 768/14588[extract] 896/14588[extract] 1024/14588[extract] 1152/14588[extract] 1280/14588[extract] 1408/14588[extract] 1536/14588[extract] 1664/14588[extract] 1792/14588[extract] 1920/14588[extract] 2048/14588[extract] 2176/14588[extract] 2304/14588[extract] 2432/14588[extract] 2560/14588[extract] 2688/14588[extract] 2816/14588[extract] 2944/14588[extract] 3072/14588[extract] 3200/14588[extract] 3328/14588[extract] 3456/14588[extract] 3584/14588[extract] 3712/14588[extract] 3840/14588[extract] 3968/14588[extract] 4096/14588[extract] 4224/14588[extract] 4352/14588[extract] 4480/14588[extract] 4608/14588[extract] 4736/14588[extract] 4864/14588[extract] 4992/14588[extract] 5120/14588[extract] 5248/14588[extract] 5376/14588[extract] 5504/14588[extract] 5632/14588[extract] 5760/14588[extract] 5888/14588[extract] 6016/14588[extract] 6144/14588[extract] 6272/14588[extract] 6400/14588[extract] 6528/14588[extract] 6656/14588[extract] 6784/14588[extract] 6912/14588[extract] 7040/14588[extract] 7168/14588[extract] 7296/14588[extract] 7424/14588[extract] 7552/14588[extract] 7680/14588[extract] 7808/14588[extract] 7936/14588[extract] 8064/14588[extract] 8192/14588[extract] 8320/14588[extract] 8448/14588[extract] 8576/14588[extract] 8704/14588[extract] 8832/14588[extract] 8960/14588[extract] 9088/14588[extract] 9216/14588[extract] 9344/14588[extract] 9472/14588[extract] 9600/14588[extract] 9728/14588[extract] 9856/14588[extract] 9984/14588[extract] 10112/14588[extract] 10240/14588[extract] 10368/14588[extract] 10496/14588[extract] 10624/14588[extract] 10752/14588[extract] 10880/14588[extract] 11008/14588[extract] 11136/14588[extract] 11264/14588[extract] 11392/14588[extract] 11520/14588[extract] 11648/14588[extract] 11776/14588[extract] 11904/14588[extract] 12032/14588[extract] 12160/14588[extract] 12288/14588[extract] 12416/14588[extract] 12544/14588[extract] 12672/14588[extract] 12800/14588[extract] 12928/14588[extract] 13056/14588[extract] 13184/14588[extract] 13312/14588[extract] 13440/14588[extract] 13568/14588[extract] 13696/14588[extract] 13824/14588[extract] 13952/14588[extract] 14080/14588[extract] 14208/14588[extract] 14336/14588[extract] 14464/14588[extract] 14588/14588
+baseline             R1= 70.8  R5= 82.6  R10= 86.8  mAP= 52.1
+CP-global            R1= 69.8  R5= 82.1  R10= 86.7  mAP= 52.3   (R1 -1.0, mAP +0.2)
+CP-percam            R1= 72.9  R5= 85.3  R10= 89.5  mAP= 55.9   (R1 +2.1, mAP +3.9)
+
+  [N_PROTO x seed 안정성 / CP-percam]
+  N_PROTO R1(mean±std)      mAP(mean±std)     
+  all      72.9±0.0       55.9±0.0
+  5        38.2±3.3       30.4±2.5
+  10       58.7±0.9       44.6±0.5
+  20       66.5±0.8       50.5±0.5
+  50       70.8±0.3       53.9±0.2
+
+해석: CP-percam>baseline → 학습0 cross-domain 향상 / CP-percam>CP-global → 카메라별 보정이 핵심 / N_PROTO 10~20 안정 → 소량사진 주장 OK

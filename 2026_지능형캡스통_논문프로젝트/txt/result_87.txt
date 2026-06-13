@@ -1,0 +1,19 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/torchreid/reid/metrics/rank.py:11: UserWarning: Cython evaluation (very fast so highly recommended) is unavailable, now use python evaluation.
+  warnings.warn(
+======================================================================
+파인튜닝 전/후 gen_sim 비교
+======================================================================
+
+데이터 준비...
+  학습 데이터: 원본 12936장 + 생성 0장 = 12936장
+  ID 수: 751
+
+OSNet 로드...
+
+--- 파인튜닝 전 ---
+  [BEFORE] c1_sim=0.9897  gen_sim=0.9878  차이=-0.0018  (n=500)
+
+--- 파인튜닝 (20 epochs) ---
+  epoch 5/20: loss=3.077 acc=34.5%
+  epoch 10/20: loss=1.504 acc=67.7%
+  epoch 15/20: loss=0.727 acc=85.4%

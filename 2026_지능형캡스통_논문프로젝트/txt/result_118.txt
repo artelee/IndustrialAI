@@ -1,0 +1,35 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+데이터 로드...
+CLIP-ReID 로드 (Duke→Market)...
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_duke_nosie.pth
+query(C6) feature...
+  query(C6)=583
+
+멀티카메라 갤러리 구성 (C1~C5)...
+  c1: 668명
+  c2: 528명
+  c3: 715명
+  c4: 246명
+  c5: 620명
+  갤러리 총 entry=2777 (카메라 분포=[668 528 715 246 620])
+
+
+========================================================================
+## [2026-06-03] script118 멀티카메라 평가 (Gallery=C1~C5, Query=C6, Duke→Market)
+   query=583, gallery entry=2777, α=0.8
+========================================================================
+
+구성                    R1       R5       R10      mAP      ΔmAP    
+------------------------------------------------------------------
+Baseline              67.1     85.1     90.2     56.3     —       
+Proposed (Fus+CP)     79.2     90.9     94.9     67.4     +11.1
+------------------------------------------------------------------
+(참고) +CP only      R1=78.0 mAP=67.6 (Δ+11.3)
+(참고) +Fusion only  R1=68.8 mAP=56.5 (Δ+0.2)
+------------------------------------------------------------------
+해석: C1~C5 전부 한 갤러리(진짜 멀티카메라). Proposed가 Baseline 대비 양성이면 멀티카메라 일반성 입증

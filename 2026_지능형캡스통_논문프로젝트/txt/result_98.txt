@@ -1,0 +1,37 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+
+==============================================================================
+## [2026-06-01] script98 feature 융합 (트랙② , c1base)
+   ID 당 prototype = α·원본 + (1-α)·생성평균  | α sweep [1.0, 0.8, 0.6, 0.4, 0.2, 0.0]
+==============================================================================
+[sparse] ids=668 gallery=2114 gen=2451 query=2451
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_duke_nosie.pth
+[cache] q.npy
+[cache] g_c1.npy
+[cache] gen.npy
+
+[보정 없음]
+F α=1.0 (=원본만)         R1= 58.1  R5= 80.2  R10= 86.5  mAP= 68.3
+F α=0.8                R1= 58.5  R5= 81.2  R10= 86.7  mAP= 68.6   (R1 +0.4, mAP +0.3)
+F α=0.6                R1= 56.8  R5= 80.0  R10= 87.0  mAP= 67.4   (R1 -1.4, mAP -1.0)
+F α=0.4                R1= 52.9  R5= 77.3  R10= 84.8  mAP= 63.9   (R1 -5.2, mAP -4.5)
+F α=0.2                R1= 47.6  R5= 72.3  R10= 81.6  mAP= 58.8   (R1 -10.6, mAP -9.5)
+F α=0.0 (=생성만)         R1= 40.1  R5= 65.0  R10= 75.4  mAP= 51.7   (R1 -18.1, mAP -16.6)
+
+[CP 보정]
+F α=1.0+CP (=원본만)      R1= 66.7  R5= 86.4  R10= 90.9  mAP= 75.4
+F α=0.8+CP             R1= 66.2  R5= 86.0  R10= 91.1  mAP= 75.1   (R1 -0.5, mAP -0.3)
+F α=0.6+CP             R1= 64.3  R5= 85.6  R10= 90.7  mAP= 73.8   (R1 -2.3, mAP -1.6)
+F α=0.4+CP             R1= 60.8  R5= 83.2  R10= 89.3  mAP= 70.9   (R1 -5.8, mAP -4.6)
+F α=0.2+CP             R1= 54.0  R5= 79.6  R10= 87.3  mAP= 65.4   (R1 -12.7, mAP -10.0)
+F α=0.0+CP (=생성만)      R1= 47.5  R5= 73.4  R10= 83.3  mAP= 59.3   (R1 -19.1, mAP -16.2)
+
+해석:
+  α<1.0 에서 mAP > α=1.0 인 α 존재 → 융합이 원본보다 나음 (트랙② 성공)
+  모든 α<1.0 에서 mAP <= α=1.0 → 생성 feature 도 손상 → 트랙①(모델 교체) 정당
+  +CP 줄에서도 같은 패턴이면 메커니즘 일관성 확보

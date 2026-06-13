@@ -1,0 +1,22 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+
+==============================================================================
+## [2026-06-01] script94 sparse 갤러리 + 생성 (기여③)
+   weight=clipreid_duke_nosie.pth  gallery=c1 only  query=c2~c6 real
+==============================================================================
+[sparse] ids=668  gallery(c1 real)=2114  gen=2451  query(c2~c6 real)=2451
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_duke_nosie.pth
+[extract] 128/2451[extract] 256/2451[extract] 384/2451[extract] 512/2451[extract] 640/2451[extract] 768/2451[extract] 896/2451[extract] 1024/2451[extract] 1152/2451[extract] 1280/2451[extract] 1408/2451[extract] 1536/2451[extract] 1664/2451[extract] 1792/2451[extract] 1920/2451[extract] 2048/2451[extract] 2176/2451[extract] 2304/2451[extract] 2432/2451[extract] 2451/2451
+[extract] 128/2114[extract] 256/2114[extract] 384/2114[extract] 512/2114[extract] 640/2114[extract] 768/2114[extract] 896/2114[extract] 1024/2114[extract] 1152/2114[extract] 1280/2114[extract] 1408/2114[extract] 1536/2114[extract] 1664/2114[extract] 1792/2114[extract] 1920/2114[extract] 2048/2114[extract] 2114/2114
+[extract] 128/2451[extract] 256/2451[extract] 384/2451[extract] 512/2451[extract] 640/2451[extract] 768/2451[extract] 896/2451[extract] 1024/2451[extract] 1152/2451[extract] 1280/2451[extract] 1408/2451[extract] 1536/2451[extract] 1664/2451[extract] 1792/2451[extract] 1920/2451[extract] 2048/2451[extract] 2176/2451[extract] 2304/2451[extract] 2432/2451[extract] 2451/2451
+B0 (c1 real)   R1= 59.6  R5= 78.3  R10= 84.5  mAP= 56.4
+E1 (+gen)      R1= 59.9  R5= 75.6  R10= 81.2  mAP= 47.4   (R1 +0.2, mAP -9.0)
+B0+CP          R1= 65.4  R5= 81.7  R10= 87.1  mAP= 62.8   (R1 +5.8, mAP +6.4)
+E1+CP          R1= 64.9  R5= 79.4  R10= 84.9  mAP= 52.7   (R1 +5.2, mAP -3.8)
+
+해석: E1>B0 → 생성이 빈 시점 채워 이득(기여③ 성립) / E1<=B0 → sparse 에서도 생성 약함→기여① 강화 / E1+CP 최고 → 결합이 베스트

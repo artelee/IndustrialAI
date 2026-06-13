@@ -1,0 +1,86 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+
+## [2026-06-01] script92 A/B/C 비교 (생성효과 격리)
+A=기본, B=원본만 fine-tune, C=원본+생성 fine-tune | str0.65 c3 | EPOCHS=12
+
+======================================================================
+A: 기본 모델 (학습 X)
+======================================================================
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_market_nosie.pth
+
+======================================================================
+B: 원본만 fine-tune
+======================================================================
+
+  [B] 학습...
+    원본 12936 + 생성 0 = 12936장
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_market_nosie.pth
+    epoch 4/12: acc=98.0%
+    epoch 8/12: acc=99.8%
+    epoch 12/12: acc=100.0%
+
+======================================================================
+C: 원본 + 생성 fine-tune
+======================================================================
+
+  [C] 학습...
+    원본 12936 + 생성 652 = 13588장
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_market_nosie.pth
+    epoch 4/12: acc=97.3%
+    epoch 8/12: acc=99.7%
+    epoch 12/12: acc=99.9%
+
+======================================================================
+결과 비교 (5개 카메라 평균)
+======================================================================
+설정                       R1        gen_sim     c1_sim      R1+gen      
+----------------------------------------------------------------------
+A 기본(학습X)                91.2      0.883       0.906       91.4        
+B 원본만                    89.8      0.586       0.657       89.6        
+C 원본+생성                  89.0      0.612       0.653       89.4        
+----------------------------------------------------------------------
+
+핵심 비교:
+  C vs B (생성 순수 효과):
+    R1:      89.8 → 89.0 (-0.8)
+    gen_sim: 0.586 → 0.612 (+0.026)
+    R1+gen:  89.6 → 89.4 (-0.2)
+  B vs A (fine-tune 자체 효과): R1 91.2 → 89.8 (-1.4)
+
+해석:
+  ✅ 생성 학습이 gen_sim 올림 → 모델이 생성물 더 인식
+  ℹ️ B≈A → fine-tune 자체는 큰 변화 없음 (통제군 정상)
+
+카메라별 상세는 result_92.txt 참고
+
+카메라별 상세:
+
+[A 기본(학습X)]
+  c2: R1=93 gen_sim=0.887 c1_sim=0.906 R1+gen=93(+0)
+  c3: R1=92 gen_sim=0.883 c1_sim=0.905 R1+gen=92(+0)
+  c4: R1=92 gen_sim=0.888 c1_sim=0.919 R1+gen=92(+0)
+  c5: R1=85 gen_sim=0.872 c1_sim=0.894 R1+gen=86(+1)
+  c6: R1=94 gen_sim=0.885 c1_sim=0.906 R1+gen=94(+0)
+
+[B 원본만]
+  c2: R1=90 gen_sim=0.605 c1_sim=0.665 R1+gen=89(-1)
+  c3: R1=93 gen_sim=0.592 c1_sim=0.659 R1+gen=94(+1)
+  c4: R1=91 gen_sim=0.597 c1_sim=0.693 R1+gen=90(-1)
+  c5: R1=83 gen_sim=0.551 c1_sim=0.614 R1+gen=83(+0)
+  c6: R1=92 gen_sim=0.587 c1_sim=0.655 R1+gen=92(+0)
+
+[C 원본+생성]
+  c2: R1=88 gen_sim=0.626 c1_sim=0.654 R1+gen=90(+2)
+  c3: R1=91 gen_sim=0.610 c1_sim=0.651 R1+gen=92(+1)
+  c4: R1=95 gen_sim=0.630 c1_sim=0.692 R1+gen=94(-1)
+  c5: R1=83 gen_sim=0.583 c1_sim=0.617 R1+gen=82(-1)
+  c6: R1=88 gen_sim=0.613 c1_sim=0.650 R1+gen=89(+1)

@@ -1,0 +1,36 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+데이터 로드...
+CLIP-ReID 로드...
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_duke_nosie.pth
+feature 추출...
+  query=583, gallery=2777, 생성보유=2777
+
+
+========================================================================
+## [2026-06-03] script120 생성본 feature 보정 융합 (멀티카메라)
+   Gallery=C1~C5, Query=C6, query=583, gallery=2777
+========================================================================
+
+구성                                R1       mAP      ΔmAP    
+------------------------------------------------------------
+Baseline (real, no CP)            67.1     56.3     —       
+real + CP                         78.0     67.6     +11.3
+------------------------------------------------------------
+A) gen raw 융합 α=0.7 +CP           77.0     65.3     -2.3 (vs CP)
+A) gen raw 융합 α=0.8 +CP           79.2     67.4     -0.2 (vs CP)
+A) gen raw 융합 α=0.9 +CP           78.6     67.8     +0.3 (vs CP)
+------------------------------------------------------------
+B) gen 보정 융합 α=0.7 +CP            76.7     65.2     -2.4 (vs CP)
+B) gen 보정 융합 α=0.8 +CP            78.6     67.1     -0.5 (vs CP)
+B) gen 보정 융합 α=0.9 +CP            78.0     67.6     +0.0 (vs CP)
+------------------------------------------------------------
+C) 각자보정 융합 α=0.7 +CP              76.0     63.9     -3.7 (vs CP)
+C) 각자보정 융합 α=0.8 +CP              77.5     65.5     -2.1 (vs CP)
+C) 각자보정 융합 α=0.9 +CP              78.2     66.5     -1.1 (vs CP)
+------------------------------------------------------------
+해석: B/C 가 'real+CP'(cp_m) 보다 높으면 → feature 보정이 융합을 살림. 생성형 기여 입증

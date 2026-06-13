@@ -1,0 +1,55 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+======================================================================
+Phase 1: 학습 ID 생성 (카메라: ['c3'])
+======================================================================
+  이미 생성됨, 스킵
+
+======================================================================
+Phase 2: CLIP-ReID 파인튜닝
+======================================================================
+  학습: 원본 12936 + 생성 652 = 13588장, ID 751
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_market_nosie.pth
+  CLIP-ReID nosie 로드: /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_market_nosie.pth
+
+--- 파인튜닝 전 ---
+  [BEFORE]
+  classifier 초기화: feat_dim=1280, classes=751
+    c2: c1_sim=0.9060 gen_sim=0.8869 gap=-0.0191 R1=93% R1+gen=93%(+0)
+    c3: c1_sim=0.9049 gen_sim=0.8834 gap=-0.0215 R1=92% R1+gen=92%(+0)
+    c4: c1_sim=0.9186 gen_sim=0.8884 gap=-0.0302 R1=92% R1+gen=92%(+0)
+    c5: c1_sim=0.8935 gen_sim=0.8724 gap=-0.0211 R1=85% R1+gen=86%(+1)
+    c6: c1_sim=0.9058 gen_sim=0.8849 gap=-0.0210 R1=94% R1+gen=94%(+0)
+  epoch 5/30: loss=1.044 acc=99.6%
+  epoch 10/30: loss=1.018 acc=99.9%
+  epoch 15/30: loss=1.010 acc=99.9%
+  epoch 20/30: loss=0.999 acc=100.0%
+  epoch 25/30: loss=0.996 acc=100.0%
+  epoch 30/30: loss=0.995 acc=100.0%
+
+--- 파인튜닝 후 ---
+  [AFTER]
+    c2: c1_sim=0.6168 gen_sim=0.5838 gap=-0.0330 R1=90% R1+gen=90%(+0)
+    c3: c1_sim=0.6134 gen_sim=0.5774 gap=-0.0360 R1=93% R1+gen=92%(-1)
+    c4: c1_sim=0.6753 gen_sim=0.6136 gap=-0.0617 R1=91% R1+gen=90%(-1)
+    c5: c1_sim=0.5727 gen_sim=0.5388 gap=-0.0339 R1=78% R1+gen=79%(+1)
+    c6: c1_sim=0.6167 gen_sim=0.5754 gap=-0.0412 R1=91% R1+gen=91%(+0)
+
+  weight 저장: /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_sdaware.pth
+
+======================================================================
+
+핵심 확인:
+  파인튜닝 후 gen_sim 올라갔나?
+  → 올라감: 모델이 SD 이미지 알아보기 시작 → 갤러리 확장 가능!
+  → R1+gen > R1: 갤러리 확장이 실제로 매칭 향상!
+  
+  되면 다음:
+  - GEN_CAMS를 ["c2","c3","c4","c5","c6"] 전체로
+  - Duke 학습 → Market Cross-Domain 평가
+  - 도메인 보정 결합
+

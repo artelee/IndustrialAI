@@ -1,0 +1,67 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+
+==============================================================================
+## [2026-06-01] script100 confidence-gated feature 융합
+   하위 X% (1등 유사도 낮은 query) 만 α 융합 prototype 으로 재매칭
+==============================================================================
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_duke_nosie.pth
+
+==============================================================================
+### 공간 A_c1_noCP  (gallery_cam=c1, CP=X)
+==============================================================================
+[A_c1_noCP] ids=668 gallery=2114 gen=2451 query=2451
+[cache] q.npy
+[cache] g_c1.npy
+[cache] gen.npy
+
+  baseline (원본 prototype)   R1=58.1  mAP=68.3
+
+  X%    α     적용수     R1        mAP       ΔR1       ΔmAP      
+  ------------------------------------------------------------
+  10    0.8   245     58.2      68.3      +0.1      +0.0      
+  20    0.8   490     58.7      68.7      +0.5      +0.3      
+  30    0.8   735     58.5      68.6      +0.4      +0.2      
+  50    0.8   1225    58.7      68.7      +0.5      +0.4      
+  70    0.8   1715    58.8      68.8      +0.6      +0.5      
+  100   0.8   2451    58.5      68.6      +0.4      +0.3      
+  10    0.9   245     58.3      68.4      +0.1      +0.1      
+  20    0.9   490     58.6      68.6      +0.4      +0.3      
+  30    0.9   735     58.7      68.7      +0.5      +0.4      
+  50    0.9   1225    58.8      68.9      +0.7      +0.5      
+  70    0.9   1715    59.0      68.9      +0.9      +0.6      
+  100   0.9   2451    59.2      69.0      +1.0      +0.7      
+
+==============================================================================
+### 공간 B_c6_CP  (gallery_cam=c6, CP=O)
+==============================================================================
+[B_c6_CP] ids=577 gallery=3169 gen=500 query=2138
+[cache] q.npy
+[cache] g_c6.npy
+[cache] gen.npy
+
+  baseline (원본 prototype)   R1=65.9  mAP=75.3
+
+  X%    α     적용수     R1        mAP       ΔR1       ΔmAP      
+  ------------------------------------------------------------
+  10    0.8   213     65.9      75.4      +0.0      +0.0      
+  20    0.8   427     65.9      75.4      +0.0      +0.1      
+  30    0.8   641     66.1      75.5      +0.2      +0.1      
+  50    0.8   1069    66.0      75.4      +0.1      +0.1      
+  70    0.8   1496    66.1      75.5      +0.2      +0.1      
+  100   0.8   2138    66.1      75.4      +0.2      +0.1      
+  10    0.9   213     66.0      75.4      +0.1      +0.1      
+  20    0.9   427     66.2      75.6      +0.3      +0.2      
+  30    0.9   641     66.4      75.6      +0.5      +0.3      
+  50    0.9   1069    66.5      75.7      +0.6      +0.4      
+  70    0.9   1496    66.5      75.7      +0.6      +0.4      
+  100   0.9   2138    66.4      75.6      +0.5      +0.3      
+
+해석:
+  특정 X% 에서 ΔmAP > 98/99 의 +0.3 → confidence 게이팅이 융합 효과 증폭 ✅
+  모든 X% 에서 ΔmAP ≤ +0.3 → 게이팅은 추가 이득 없음, 융합 단독으로 충분
+  ΔmAP < 0 인 X% 가 많으면 → 게이팅 잘못 작동 (어려운 query 정의 재검토)

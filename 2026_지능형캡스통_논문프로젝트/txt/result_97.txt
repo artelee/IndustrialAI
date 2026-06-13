@@ -1,0 +1,22 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+
+==============================================================================
+## [2026-06-01] script97 c6 sparse + 생성 (어려운 세팅 재도전)
+   gallery=c6 only  query=c1~c5 real  gen=c6→c1~c5
+==============================================================================
+[c6 sparse] ids=577 gallery(c6 real)=3169 gen=500 query(c1~c5 real)=2138
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_duke_nosie.pth
+[extract] 128/2138[extract] 256/2138[extract] 384/2138[extract] 512/2138[extract] 640/2138[extract] 768/2138[extract] 896/2138[extract] 1024/2138[extract] 1152/2138[extract] 1280/2138[extract] 1408/2138[extract] 1536/2138[extract] 1664/2138[extract] 1792/2138[extract] 1920/2138[extract] 2048/2138[extract] 2138/2138
+[extract] 128/3169[extract] 256/3169[extract] 384/3169[extract] 512/3169[extract] 640/3169[extract] 768/3169[extract] 896/3169[extract] 1024/3169[extract] 1152/3169[extract] 1280/3169[extract] 1408/3169[extract] 1536/3169[extract] 1664/3169[extract] 1792/3169[extract] 1920/3169[extract] 2048/3169[extract] 2176/3169[extract] 2304/3169[extract] 2432/3169[extract] 2560/3169[extract] 2688/3169[extract] 2816/3169[extract] 2944/3169[extract] 3072/3169[extract] 3169/3169
+[extract] 128/500[extract] 256/500[extract] 384/500[extract] 500/500
+B0 (c6 real)   R1= 55.5  R5= 72.2  R10= 79.9  mAP= 48.3
+E1 (+gen)      R1= 55.3  R5= 71.8  R10= 79.0  mAP= 47.3   (R1 -0.2, mAP -1.0)
+B0+CP          R1= 62.9  R5= 79.7  R10= 86.1  mAP= 57.2   (R1 +7.3, mAP +8.9)
+E1+CP          R1= 63.0  R5= 79.7  R10= 85.1  mAP= 56.2   (R1 +7.5, mAP +7.9)
+
+해석: E1>B0 → 어려운 세팅에서 생성이 부활(논문 임팩트 큼) / E1<=B0 → SD1.5 한계 확정 → 모델 교체로 정당하게 넘어감

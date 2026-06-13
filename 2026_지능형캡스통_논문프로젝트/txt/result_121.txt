@@ -1,0 +1,25 @@
+/home/ubuntu/miniconda3/envs/reid-gen/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ubuntu/CLIP-ReID/model/make_model_clipreid.py:157: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  param_dict = torch.load(trained_path)
+데이터 로드...
+  테스트 5명: ['0001', '0003', '0004', '0005', '0006']
+CLIP-ReID 로드...
+Resized position embedding: %s to %s torch.Size([197, 768]) torch.Size([129, 768])
+Position embedding resize to height:16 width: 8
+Loading pretrained model from /home/ubuntu/reid-gallery-expansion/checkpoints/clipreid_duke_nosie.pth
+
+PID     정답(C1r)    생성(깨끗)      열화(부드)      특징보정        
+-------------------------------------------------------
+0001    0.941      0.920       0.922       0.914       
+0003    0.922      0.894       0.893       0.905       
+0004    0.934      0.890       0.881       0.916       
+0005    0.894      0.866       0.869       0.875       
+0006    0.916      0.903       0.905       0.906       
+-------------------------------------------------------
+평균      0.922      0.895       0.894       0.903       
+
+해석:
+  정답(C1r)=0.922 ← 생성본이 이걸 넘어야 융합에 도움
+  특징보정(domain gap)=0.903 > 깨끗(0.895) 이면 → feature 보정 효과
+  단, 정답(0.922)을 넘는지가 핵심
