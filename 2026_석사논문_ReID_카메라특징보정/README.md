@@ -1,110 +1,110 @@
 # reid-camera-calibration
 
-**Training-free camera calibration for person re-identification: subtract each camera's mean feature at retrieval time to reduce camera bias, and compare the effect on seen (same-domain) and unseen (cross-domain) cameras.**
+**학습 없이 검색 단계에서 카메라별 특징 평균을 빼서 보행자 재식별(Re-ID)의 카메라 편향을 줄이고, 동일 도메인·교차 도메인에서 효과를 비교한다.**
 
-[한국어 README](README_ko.md)
+[English README](README_en.md)
 
-## Problem
+## 해결하는 문제
 
-A Re-ID model embeds every image of a camera with a shared camera-specific offset (lighting, viewpoint, background, colour response). On cameras the model was trained on, this offset is largely learned away; on cameras it has never seen (cross-domain), images of *different* people from the same camera can end up closer than images of the *same* person from different cameras. This repository measures how much of that gap a simple retrieval-time correction recovers, without any training or labels.
+Re-ID 모델은 같은 카메라에서 찍힌 이미지에 공통된 카메라 고유 성분(조명, 시점, 배경, 색 특성)을 함께 담는다. 학습한 카메라에서는 이 성분이 대부분 학습으로 지워지지만, 학습하지 않은 카메라(교차 도메인)에서는 같은 카메라의 *다른* 사람이 다른 카메라의 *같은* 사람보다 더 가깝게 나올 수 있다. 이 저장소는 학습이나 라벨 없이 검색 단계의 간단한 보정으로 이 차이를 얼마나 줄일 수 있는지 측정한다.
 
-## Method
+## 방법
 
-Camera-mean subtraction (Song et al., ICLR 2025), applied after feature extraction:
+카메라 평균 차감 (Song et al., ICLR 2025), 특징 추출 후 적용:
 
 ```mermaid
 flowchart LR
-    A["Image"] --> B["Backbone<br/>(CLIP-ReID / PersonViT)"]
-    B --> C["f = N(raw feature)"]
-    C --> D["mu_c = mean of f over camera c<br/>(query set and gallery set separately)"]
+    A["이미지"] --> B["백본<br/>(CLIP-ReID / PersonViT)"]
+    B --> C["f = N(원시 특징)"]
+    C --> D["mu_c = 카메라 c의 f 평균<br/>(쿼리·갤러리 각각)"]
     D --> E["f_hat = N(f - mu_c)"]
-    E --> F["Cosine ranking<br/>Rank-1, mAP"]
-    F --> G["Paired query-level bootstrap<br/>95% CI of the difference"]
+    E --> F["코사인 순위<br/>Rank-1, mAP"]
+    F --> G["쿼리 단위 대응 부트스트랩<br/>차이의 95% CI"]
 ```
 
-| Step | Module | What it does |
+| 단계 | 모듈 | 내용 |
 |---|---|---|
-| 1. Feature extraction | `reid_calib.extract` | CLIP-ReID ViT-B/16 or PersonViT ViT-B/16, global feature before BNNeck, raw float32, cached as `.npz` |
-| 2. Calibration | `reid_calib.calibrate` | `f_hat = N(f - mu_c)`, `f = N(raw)`; `mu_c` is the per-camera mean, computed **separately** for the query set and the gallery set; only camera ids are used |
-| 3. Evaluation | `reid_calib.evaluate` | standard protocol: same-pid **and** same-camera gallery images removed per query; Rank-1, mAP |
-| 4. Statistics | `reid_calib.stats` | paired query-level bootstrap (1,000 resamples, seed 0) of per-query AP / Rank-1 difference, 95 % CI, `*` if it excludes 0 |
+| 1. 특징 추출 | `reid_calib.extract` | CLIP-ReID ViT-B/16 또는 PersonViT ViT-B/16, BNNeck 이전 전역 특징, 원시 float32, `.npz` 캐시 |
+| 2. 보정 | `reid_calib.calibrate` | `f_hat = N(f - mu_c)`, `f = N(원시)`; `mu_c`는 카메라별 평균으로 쿼리 집합과 갤러리 집합에서 **각각** 계산; 카메라 번호만 사용 |
+| 3. 평가 | `reid_calib.evaluate` | 표준 프로토콜: 쿼리마다 같은 인물·같은 카메라 갤러리 제외, Rank-1, mAP |
+| 4. 통계 | `reid_calib.stats` | 쿼리별 AP / Rank-1 차이의 대응 부트스트랩 (1,000회, 시드 0), 95% CI, 0 미포함 시 `*` |
 
-After the subtraction (before the final normalisation) every camera's mean feature is exactly zero; this is the invariant tested in `tests/test_calibrate.py`.
+차감 직후(마지막 정규화 전) 카메라별 평균 특징은 정확히 0이 된다. `tests/test_calibrate.py`가 이 성질을 검사한다.
 
-## Installation
+## 설치
 
 ```bash
 git clone https://github.com/artelee/IndustrialAI.git
 cd IndustrialAI/2026_석사논문_ReID_카메라특징보정
-pip install -r requirements.txt          # numpy, pyyaml, pytest: enough for calibration / evaluation / tests
-pip install -e .                         # optional: import reid_calib from anywhere
-pytest                                   # CPU only, synthetic data
+pip install -r requirements.txt          # numpy, pyyaml, pytest: 보정·평가·테스트에 충분
+pip install -e .                         # 선택: 어디서나 reid_calib import
+pytest                                   # CPU, 합성 데이터만 사용
 ```
 
-Feature extraction additionally needs PyTorch, torchvision, Pillow and the requirements of the backbone's own repository (`pip install -e ".[extract]"` plus e.g. `pip install -r third_party/CLIP-ReID/requirements.txt`). The figure needs matplotlib (`pip install -e ".[plot]"`).
+특징 추출에는 PyTorch, torchvision, Pillow와 백본 원 저장소의 requirements가 추가로 필요하다 (`pip install -e ".[extract]"` 및 예: `pip install -r third_party/CLIP-ReID/requirements.txt`). 그림에는 matplotlib이 필요하다 (`pip install -e ".[plot]"`).
 
-### Data and weights (links only, nothing is redistributed here)
+### 데이터·가중치 (링크만 안내, 이 저장소에는 포함하지 않음)
 
-* **Datasets**: [Market-1501](https://zheng-lab-anu.github.io/Project/project_reid.html), DukeMTMC-reID (withdrawn by its authors; use only a copy you are licensed to use). Obtain them from the official sources under their licenses. Put them at `data/market1501/` and `data/dukemtmc-reid/` (each with `query/` and `bounding_box_test/`) or edit `configs/{market,duke}.yaml` / pass `--data-root market <path>`.
-* **CLIP-ReID** code and ViT-B/16 checkpoints: <https://github.com/Syliz517/CLIP-ReID> → clone to `third_party/CLIP-ReID`, weights to `weights/clipreid/` (paths in `configs/backbones/clipreid.yaml`). The upstream code downloads the OpenAI CLIP ViT-B/16 weights on first use.
-* **PersonViT** code: <https://github.com/hustvl/PersonViT> → clone to `third_party/PersonViT`; pretrained ViT-B/16 <https://huggingface.co/lakeAGI/PersonViT> and Re-ID fine-tuned checkpoints <https://huggingface.co/lakeAGI/PersonViTReID> → `weights/personvit/` (paths in `configs/backbones/personvit.yaml`).
+* **데이터셋**: [Market-1501](https://zheng-lab-anu.github.io/Project/project_reid.html), DukeMTMC-reID (저자가 공개 중단; 사용 허가된 사본만 사용). 공식 출처에서 각 라이선스에 따라 받는다. `data/market1501/`, `data/dukemtmc-reid/` (각각 `query/`, `bounding_box_test/` 포함)에 두거나 `configs/{market,duke}.yaml` 수정 / `--data-root market <경로>` 사용.
+* **CLIP-ReID** 코드와 ViT-B/16 가중치: <https://github.com/Syliz517/CLIP-ReID> → `third_party/CLIP-ReID`에 clone, 가중치는 `weights/clipreid/` (`configs/backbones/clipreid.yaml` 경로). 원 코드가 처음 실행 시 OpenAI CLIP ViT-B/16 가중치를 내려받는다.
+* **PersonViT** 코드: <https://github.com/hustvl/PersonViT> → `third_party/PersonViT`에 clone; 사전학습 ViT-B/16 <https://huggingface.co/lakeAGI/PersonViT>, Re-ID 미세조정 가중치 <https://huggingface.co/lakeAGI/PersonViTReID> → `weights/personvit/` (`configs/backbones/personvit.yaml` 경로).
 
-The model code is imported from your checkout (`repo:` in the backbone config, or `--repo`); it is not copied into this repository. The upstream CLIP-ReID code moves the model to CUDA internally, so CLIP-ReID extraction needs a GPU; PersonViT extraction also runs with `--device cpu` (slow). Calibration, evaluation and statistics never need a GPU or torch.
+모델 코드는 사용자가 받은 원 저장소에서 import한다 (백본 설정의 `repo:` 또는 `--repo`). 이 저장소에 복사하지 않는다. CLIP-ReID 원 코드는 내부에서 모델을 CUDA로 옮기므로 CLIP-ReID 추출에는 GPU가 필요하다. PersonViT 추출은 `--device cpu`로도 동작한다(느림). 보정·평가·통계는 GPU나 torch가 필요 없다.
 
-### Run
+### 실행
 
 ```bash
-# CLIP-ReID trained on Duke, evaluated on Market: Base vs. + calibration with bootstrap CI.
-# Uses outputs/features/clip_duke_market_{query,gal}.npz if present, otherwise extracts them (GPU).
+# Duke로 학습한 CLIP-ReID를 Market에서 평가: Base 대 + 보정, 부트스트랩 CI.
+# outputs/features/clip_duke_market_{query,gal}.npz가 있으면 사용하고, 없으면 추출 (GPU)
 python scripts/run_eval.py --backbone clipreid --train duke --eval market --calib
 
-# all 8 settings (2 backbones x same/cross domain) from an existing feature cache (CPU, ~1-2 min in total)
+# 기존 특징 캐시로 8개 설정 전체 (백본 2개 x 동일/교차 도메인) (CPU, 합계 1~2분)
 python scripts/run_eval.py --backbone clipreid personvit --train market duke --eval market duke \
     --calib --features data/features
 
-# bar chart of your own run
+# 직접 실행한 결과로 막대그래프 생성
 python scripts/plot_results.py --table outputs/results/summary.json --out outputs/calibration_map.png
 ```
 
-Outputs (in `outputs/results/`, git-ignored): `<backbone>_<train>_<eval>.json` (Rank-1 / mAP for both conditions and the CIs), `<backbone>_<train>_<eval>_per_query.npz` (per-query AP and Rank-1), `summary.md`, `summary.json`.
+출력 (`outputs/results/`, git 제외): `<백본>_<학습>_<평가>.json` (두 조건의 Rank-1·mAP, CI), `<백본>_<학습>_<평가>_per_query.npz` (쿼리별 AP·Rank-1), `summary.md`, `summary.json`.
 
-Feature cache format (raw features, one file per split): `<prefix>_<train>_<eval>_{query,gal}.npz` with `feat (N, D)`, `pid`, `cam`, `name`; prefix `clip` (CLIP-ReID) or `pvit` (PersonViT). Queries exclude junk (pid -1) and distractors (pid 0); the gallery excludes junk only. The same format is used by `reid-eval-bench`.
+특징 캐시 형식 (원시 특징, 분할마다 한 파일): `<접두어>_<학습>_<평가>_{query,gal}.npz`, 키 `feat (N, D)`, `pid`, `cam`, `name`; 접두어 `clip` (CLIP-ReID), `pvit` (PersonViT). 쿼리는 junk(pid -1)·distractor(pid 0) 제외, 갤러리는 junk만 제외. `reid-eval-bench`와 같은 형식이다.
 
-## Repository layout
+## 폴더 구조
 
 ```
 reid-camera-calibration/
 ├── configs/
-│   ├── market.yaml, duke.yaml          # dataset root, split folders, file-name parser, #train ids
-│   └── backbones/{clipreid,personvit}.yaml  # upstream repo path, weights, input settings, cache prefix
+│   ├── market.yaml, duke.yaml          # 데이터 경로, 분할 폴더, 파일명 파서, 학습 인물 수
+│   └── backbones/{clipreid,personvit}.yaml  # 원 저장소 경로, 가중치, 입력 설정, 캐시 접두어
 ├── docs/
-│   ├── figures/calibration_map.png     # example chart (from docs/results_table.json)
+│   ├── figures/calibration_map.png     # 예시 그래프 (docs/results_table.json에서 생성)
 │   └── results_table.json
 ├── scripts/
-│   ├── run_eval.py                     # extract (if needed) -> Base / + Calib -> bootstrap CI -> JSON / Markdown
+│   ├── run_eval.py                     # (필요 시) 추출 -> Base / + 보정 -> 부트스트랩 CI -> JSON / Markdown
 │   └── plot_results.py
 ├── src/reid_calib/
-│   ├── extract.py                      # backbone loading (lazy torch / upstream import) and feature extraction
-│   ├── calibrate.py                    # per-camera mean subtraction
-│   ├── evaluate.py                     # Rank-1, AP / mAP (numpy only)
-│   ├── stats.py                        # paired bootstrap CI (numpy only)
-│   └── features.py                     # feature-cache .npz format
-├── tests/                              # pytest, synthetic data only
+│   ├── extract.py                      # 백본 로드 (torch·원 코드 지연 import), 특징 추출
+│   ├── calibrate.py                    # 카메라별 평균 차감
+│   ├── evaluate.py                     # Rank-1, AP / mAP (numpy만)
+│   ├── stats.py                        # 대응 부트스트랩 CI (numpy만)
+│   └── features.py                     # 특징 캐시 .npz 형식
+├── tests/                              # pytest, 합성 데이터만
 ├── pyproject.toml, requirements.txt, LICENSE
-└── outputs/                            # results and feature caches (git-ignored)
+└── outputs/                            # 결과·특징 캐시 (git 제외)
 ```
 
-## Citation, license, related repositories
+## 인용 / 라이선스 / 관련 저장소
 
-* Camera-mean calibration: Song et al. *Exploring the Camera Bias of Person Re-identification.* ICLR 2025.
-* CLIP-ReID: S. Li, L. Sun, Q. Li. *CLIP-ReID: Exploiting Vision-Language Model for Image Re-Identification without Concrete Text Labels.* AAAI 2023. Code: MIT License, (c) 2023 Syliz517.
-* PersonViT: B. Hu et al. *PersonViT: Large-scale Self-supervised Vision Transformer for Person Re-Identification.* arXiv:2408.05398, 2024. Code: Apache-2.0.
+* 카메라 평균 보정: Song et al. *Exploring the Camera Bias of Person Re-identification.* ICLR 2025.
+* CLIP-ReID: S. Li, L. Sun, Q. Li. *CLIP-ReID: Exploiting Vision-Language Model for Image Re-Identification without Concrete Text Labels.* AAAI 2023. 코드: MIT License, (c) 2023 Syliz517.
+* PersonViT: B. Hu et al. *PersonViT: Large-scale Self-supervised Vision Transformer for Person Re-Identification.* arXiv:2408.05398, 2024. 코드: Apache-2.0.
 * Market-1501: L. Zheng et al. *Scalable Person Re-identification: A Benchmark.* ICCV 2015.
 * DukeMTMC-reID: E. Ristani et al. ECCV Workshops 2016; Z. Zheng et al. ICCV 2017.
 
-License: [MIT](LICENSE), (c) 2026 ehlee. Upstream backbones keep their own licenses; no upstream code, weights, images or features are included.
+라이선스: [MIT](LICENSE), (c) 2026 ehlee. 백본은 각 원 라이선스를 따른다. 원 코드, 가중치, 이미지, 특징은 포함하지 않는다.
 
-Related repositories:
+관련 저장소:
 [2026_석사논문_ReID_평가벤치](../2026_석사논문_ReID_평가벤치/) ·
 [2026_석사논문_ReID_카메라특징보정](../2026_석사논문_ReID_카메라특징보정/) ·
 [2026_석사논문_보행방향분석](../2026_석사논문_보행방향분석/) ·
