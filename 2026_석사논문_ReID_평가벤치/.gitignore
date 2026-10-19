@@ -1,0 +1,20 @@
+# generated outputs and data (never commit features, images or weights)
+outputs/
+data/
+*.npz
+*.npy
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.jpg
+*.jpeg
+gen_*/
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/

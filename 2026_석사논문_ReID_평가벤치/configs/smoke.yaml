@@ -1,0 +1,21 @@
+# Config for the synthetic smoke run (scripts/make_synthetic_cache.py writes the cache).
+cache_dir: outputs/synthetic_cache
+out_dir: outputs/synthetic
+backbone: toy
+eta: 0.5
+assign_modes: [sim, oracle]
+n_boot: 200
+seed: 0
+datasets:
+  toy:
+    cameras: [1, 2, 3]
+    common_set: toy_std
+    camera_set: "toy_dm_c{cam}"
+experiments:
+  - {domain: same, train: toy, eval: toy}
+tags:
+  order: [front, back, side]
+  files:
+    toy: outputs/synthetic_cache/query_tags_toy.json
+sweep:
+  etas: [0.25, 0.5, 1.0]

@@ -1,0 +1,16 @@
+outputs/
+results/
+data/
+*.npz
+*.pth
+*.onnx
+*.jpg
+# (rendered poses are outputs; README skeleton figures are PNG files in docs/figures)
+*.jpeg
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/

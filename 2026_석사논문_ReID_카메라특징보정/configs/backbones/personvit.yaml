@@ -1,0 +1,19 @@
+# PersonViT ViT-B/16 (https://github.com/hustvl/PersonViT, Apache-2.0). Model code is imported from your checkout.
+name: personvit
+cache_prefix: pvit
+repo: third_party/PersonViT/transreid_pytorch   # git clone https://github.com/hustvl/PersonViT third_party/PersonViT
+# self-supervised LUPerson pre-training (needed to build the ViT; https://huggingface.co/lakeAGI/PersonViT)
+pretrained: weights/personvit/pretrained/vitb.lup.256x128.wopt.csk.4-8.ar.375.n8/checkpoint0260.pth
+models:                        # Re-ID fine-tuned checkpoints (https://huggingface.co/lakeAGI/PersonViTReID)
+  market:
+    weights: weights/personvit/reid/market.vitb.lup.256x128.wopt.csk.4-8.ar.375.n8.e0260/transformer_120.pth
+    config_file: configs/market/vit_base.yml       # relative to repo
+  duke:
+    weights: weights/personvit/reid/duke.vitb.lup.256x128.wopt.csk.4-8.ar.375.n8.e0260/transformer_120.pth
+    config_file: configs/dukemtmc/vit_base.yml
+camera_num: 8
+input:
+  size: [256, 128]
+  mean: [0.5, 0.5, 0.5]
+  std: [0.5, 0.5, 0.5]
+batch_size: 128

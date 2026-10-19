@@ -1,0 +1,4 @@
+# Walking direction of each of Pose2ID's eight common reference poses (IPG standard_poses/{1..8}.jpg),
+# by majority vote of the same direction rule on images generated with each pose.
+# Composition front/back/oblique/side = 1/1/3/3.
+directions: [front, oblique, side, side, back, side, oblique, oblique]

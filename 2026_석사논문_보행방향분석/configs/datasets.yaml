@@ -1,0 +1,13 @@
+# Example gallery locations (placeholders; pass your own with --gallery).
+market:
+  gallery: data/market1501/bounding_box_test
+  parser: market
+  name: Market-1501
+duke:
+  gallery: data/dukemtmc-reid/bounding_box_test
+  parser: duke
+  name: DukeMTMC-reID
+msmt:
+  gallery: data/msmt17/bounding_box_test   # MSMT17 converted to Market-style file names
+  parser: msmt
+  name: MSMT17

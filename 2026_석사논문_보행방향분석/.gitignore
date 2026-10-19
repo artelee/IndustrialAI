@@ -1,0 +1,15 @@
+outputs/
+results/
+data/
+*.npz
+*.pth
+*.onnx
+*.jpg
+*.jpeg
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/

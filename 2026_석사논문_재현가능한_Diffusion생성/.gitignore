@@ -1,0 +1,25 @@
+# generated data / outputs
+outputs/
+gen_seed/
+gen_*/
+data/
+third_party/
+*.npz
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.jpg
+*.jpeg
+*.png
+!docs/**/*.png
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/
+venv/

@@ -1,0 +1,37 @@
+# Default evaluation config. Paths are placeholders; override with --cache-dir / --out-dir.
+cache_dir: data/features        # unified feature cache (<backbone>_<train>_<eval>_{query,gal,<set>}.npz)
+out_dir: outputs                # reports are written here (gitignored)
+backbone: clip                  # clip (CLIP-ReID) or pvit (PersonViT)
+eta: 0.5                        # fusion weight: g' = N(N(g) + eta/K * sum_k N(e_k))
+assign_modes: [sim, oracle]     # how gallery items pick a reference set (similarity / ground-truth pid)
+n_boot: 1000                    # bootstrap resamples
+seed: 0                         # one RandomState(seed) shared by all comparisons, in table order
+
+datasets:
+  market:
+    cameras: [1, 2, 3, 4, 5, 6]
+    common_set: mkt_std               # extra features shared by all queries (common 8 poses)
+    camera_set: "mkt_dm_c{cam}"       # per-query-camera extra features (direction-aligned poses)
+  duke:
+    cameras: [1, 2, 3, 4, 5, 6, 7, 8]
+    common_set: duke_std
+    camera_set: "duke_dm_c{cam}"
+
+# Experiments in table order (train dataset -> eval dataset). Missing caches are skipped.
+experiments:
+  - {domain: same, train: market, eval: market}
+  - {domain: same, train: duke, eval: duke}
+  - {domain: cross, train: duke, eval: market}
+  - {domain: cross, train: market, eval: duke}
+  - {domain: no-train, train: none, eval: market}
+  - {domain: no-train, train: none, eval: duke}
+
+# Query tag breakdown (per-query walking direction). Tag files: {image_name: tag} JSON.
+tags:
+  order: [front, back, oblique, side]
+  files:
+    market: data/tags/query_direction_market.json
+    duke: data/tags/query_direction_duke.json
+
+sweep:
+  etas: [0.25, 0.5, 1.0, 2.0]

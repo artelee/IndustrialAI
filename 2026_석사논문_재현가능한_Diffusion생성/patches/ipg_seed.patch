@@ -1,0 +1,26 @@
+--- a/IPG/inference.py
++++ b/IPG/inference.py
+@@ -1,5 +1,6 @@
+ import argparse
+ import os
++import zlib
+ import warnings
+ import numpy as np
+ import torch
+@@ -135,7 +136,7 @@
+         os.makedirs(out_dir)
+ 
+     img_dir = args.ref_dir
+-    img_list = os.listdir(img_dir)
++    img_list = sorted(os.listdir(img_dir))
+     img_list = [os.path.join(img_dir, x) for x in img_list]
+ 
+     pose_dir = args.pose_dir
+@@ -176,6 +177,7 @@
+         reid_output = reid_net(inputs_list,cam_label= torch.zeros((inputs_list.shape[0]), dtype=torch.long), view_label= torch.ones((inputs_list.shape[0]), dtype=torch.long))
+         feature_embeds=ifr(reid_output).cuda()
+ 
++        generator.manual_seed(12580 + (zlib.crc32(ref_name.encode()) & 0x7fffffff))
+         image = pipe(
+             feature_embeds,
+             ref_image_list,

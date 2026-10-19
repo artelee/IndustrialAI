@@ -1,0 +1,28 @@
+# Default analysis settings for scripts/analyze_cameras.py.
+# Command-line arguments override these values.
+
+samples: 500          # gallery images sampled per camera
+seed: 0
+
+pose:
+  device: cpu         # "cuda" for a GPU run
+  detect_resolution: 512
+  det_ckpt: null      # null -> controlnet_aux default download URL
+  pose_ckpt: null
+
+quality:              # strict filter used for direction statistics
+  conf_th: 0.3
+  min_visible: 12
+  min_height: 0.55    # skeleton height as image fraction
+  limb_ratio: 1.6     # max bone length / torso length
+
+variation_quality: core   # filter mode for the intra/inter-camera variation analysis
+
+# Shoulder-width quantile thresholds (q33, q66) in torso lengths.
+# "preset" uses the values below for the chosen parser; "auto" recomputes them
+# from the analyzed sample.
+thresholds: preset
+preset_thresholds:
+  market: [1.076, 1.351]
+  duke: [0.865, 1.266]
+  msmt: [1.164, 1.458]

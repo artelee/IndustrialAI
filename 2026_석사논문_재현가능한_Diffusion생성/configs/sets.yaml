@@ -1,0 +1,49 @@
+# Generation sets for scripts/run_batch.py
+# Relative paths are resolved from the directory you run the script in (repo root).
+# Replace the placeholder data paths with your own.
+
+ipg:
+  python: python                          # interpreter of the Pose2ID/IPG environment
+  ipg_dir: third_party/Pose2ID/IPG        # Pose2ID checkout with patches/ipg_seed.patch applied
+  config: configs/inference.yaml          # relative to ipg_dir (IPG's own config)
+  ckpt_dir: third_party/Pose2ID/IPG/pretrained
+  extra_args: []
+
+output_root: outputs/gen_seed             # panels go to <output_root>/<set name>/<ref name>
+# staging_root: outputs/gen_seed/_staging # temp folders of not-yet-generated inputs
+input_glob: "*.jpg"
+num_poses: 8                              # every pose folder must hold exactly this many files
+seconds_per_image: 23                     # only for the ETA printout (RTX A4000, 8 poses)
+
+# One entry = one IPG run (reference folder x pose folder).
+# "cams" expands {cam} in name / ref_dir / pose_dir into one set per camera.
+# Sets run in file order (put the most important ones first).
+sets:
+  # Market-1501: standard 8 poses shipped with Pose2ID, then per-camera pose sets
+  - name: mkt_std
+    ref_dir: data/market1501/ref
+    pose_dir: third_party/Pose2ID/IPG/standard_poses
+  - name: "mkt_dm_c{cam}"
+    ref_dir: data/market1501/ref
+    pose_dir: "data/poses/market1501/c{cam}"
+    cams: [6, 5, 2, 3, 1, 4]
+
+  # DukeMTMC-reID
+  - name: duke_std
+    ref_dir: data/dukemtmc/ref
+    pose_dir: third_party/Pose2ID/IPG/standard_poses
+  - name: "duke_dm_c{cam}"
+    ref_dir: data/dukemtmc/ref
+    pose_dir: "data/poses/dukemtmc/c{cam}"
+    cams: [4, 1, 2, 6, 7, 3, 5, 8]
+
+  # MSMT17 (one reference image per identity; expected count is checked before starting)
+  - name: msmt_std
+    ref_dir: data/msmt17/ref
+    pose_dir: third_party/Pose2ID/IPG/standard_poses
+    expected_inputs: 3060
+  - name: "msmt_dm_c{cam}"
+    ref_dir: data/msmt17/ref
+    pose_dir: "data/poses/msmt17/c{cam}"
+    cams: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    expected_inputs: 3060

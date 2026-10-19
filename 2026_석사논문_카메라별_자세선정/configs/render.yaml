@@ -1,0 +1,12 @@
+# Rendering that matches the generator's reference poses (Pose2ID IPG standard_poses).
+canvas_h: 320             # draw on a 320 x 160 canvas, then LANCZOS-downscale
+out_size: [64, 128]       # (width, height)
+conf_th: 0.3
+jpeg_quality: 95
+backend: auto             # auto | controlnet_aux | builtin
+# Median body layout of the reference poses (fractions of image height/width).
+# Re-measure with: python scripts/render_poses.py ... --reference-dir <standard_poses dir>
+layout:
+  top: 0.07421875
+  bottom: 0.9375
+  cx: 0.48828125

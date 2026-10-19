@@ -1,0 +1,12 @@
+# DukeMTMC-reID gallery (placeholder path; the dataset was withdrawn by its authors).
+dataset: duke
+gallery: data/dukemtmc-reid/bounding_box_test
+parser: duke              # 0002_c1_f0044158.jpg -> camera 1
+cams: [1, 2, 3, 4, 5, 6, 7, 8]
+thresholds: [0.865, 1.266]  # shoulder-width quantiles (q33, q66) of the Duke gallery
+samples_per_camera: 500
+seed: 0                   # one RandomState shared by all cameras, in the order above
+k: 8
+min_per_dir: 1
+min_samples: 5            # a direction needs >= 5 sampled poses to receive any pose
+kmeans_n_init: 10

@@ -1,0 +1,22 @@
+--- a/IPG/inference.py
++++ b/IPG/inference.py
+@@ -139,9 +139,9 @@
+     img_list = [os.path.join(img_dir, x) for x in img_list]
+ 
+     pose_dir = args.pose_dir
+-    pose_paths = os.listdir(pose_dir)
++    pose_paths = sorted(os.listdir(pose_dir), key=lambda f: int(f.split('_')[0].split('.')[0]))
+     pose_paths = [os.path.join(pose_dir, x) for x in pose_paths]
+ 
+     inputs_list = []
+     ref_image_list = []
+     pose_image_list = []
+@@ -150,7 +150,7 @@
+         img_ref = Image.open(path_ref)
+         ref_image_pil = Image.open(path_ref).convert("RGB")
+         ref_name=os.path.basename(path_ref)
+-        rgb_img = img_ref.resize((128, 256), Image.ANTIALIAS)
++        rgb_img = img_ref.resize((128, 256), Image.LANCZOS)
+         rgb_img = np.array(rgb_img)
+         reid_input=transform_reid(rgb_img).cuda()
+         input = Variable(reid_input[None,...])

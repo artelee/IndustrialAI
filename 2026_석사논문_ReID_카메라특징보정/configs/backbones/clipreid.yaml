@@ -1,0 +1,14 @@
+# CLIP-ReID ViT-B/16 (https://github.com/Syliz517/CLIP-ReID, MIT). Model code is imported from your checkout.
+name: clipreid
+cache_prefix: clip             # feature files: <cache_prefix>_<train>_<eval>_{query,gal}.npz
+repo: third_party/CLIP-ReID    # git clone https://github.com/Syliz517/CLIP-ReID third_party/CLIP-ReID
+models:                        # official CLIP-ReID ViT-B/16 checkpoints, keyed by training dataset
+  market:
+    weights: weights/clipreid/Market1501_clipreid_ViT-B-16_60.pth
+  duke:
+    weights: weights/clipreid/Duke_clipreid_ViT-B-16_60.pth
+input:
+  size: [256, 128]
+  mean: [0.5, 0.5, 0.5]
+  std: [0.5, 0.5, 0.5]
+batch_size: 64

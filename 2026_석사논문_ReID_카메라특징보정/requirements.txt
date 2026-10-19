@@ -1,0 +1,11 @@
+# core: calibration, evaluation, statistics (CPU, no torch)
+numpy>=1.24
+pyyaml>=6.0
+pytest>=7
+# feature extraction only (GPU recommended) - also install the upstream backbone's own requirements
+# torch>=1.13
+# torchvision>=0.14
+# pillow>=9
+# yacs>=0.1.8
+# figure only
+# matplotlib>=3.7

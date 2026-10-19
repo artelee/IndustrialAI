@@ -1,0 +1,8 @@
+# Market-1501 (obtain from the official source under its license; no images in this repo)
+name: market
+root: data/market1501          # folder that contains query/ and bounding_box_test/
+query_dir: query
+gallery_dir: bounding_box_test
+parser: market                 # 0002_c1s1_000451_03.jpg -> pid 2, camera 1
+num_train_ids: 751             # identities in the training split (classifier size of a model trained here)
+cameras: [1, 2, 3, 4, 5, 6]
